@@ -1,5 +1,5 @@
 Name: mongodb
-Version: 2.0.5
+Version: 2.0.6
 Release: 1%{?dist}
 Summary: mongo client shell and tools
 License: AGPL 3.0
@@ -71,40 +71,35 @@ scons --prefix=$RPM_BUILD_ROOT/usr install
 mkdir -p $RPM_BUILD_ROOT/usr/share/man/man1
 cp debian/*.1 $RPM_BUILD_ROOT/usr/share/man/man1/
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-#cp rpm/init.d-mongod $RPM_BUILD_ROOT/etc/rc.d/init.d/mongod
-#chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongod
 mkdir -p $RPM_BUILD_ROOT/etc
-#cp rpm/mongod.conf $RPM_BUILD_ROOT/etc/mongod.conf
 mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
-#cp rpm/mongod.sysconfig $RPM_BUILD_ROOT/etc/sysconfig/mongod
-#mkdir -p $RPM_BUILD_ROOT/var/lib/mongo
-mkdir -p $RPM_BUILD_ROOT/var/log/mongo
-#touch $RPM_BUILD_ROOT/var/log/mongo/mongod.log
+mkdir -p $RPM_BUILD_ROOT/var/lib/mongodb/
+mkdir -p $RPM_BUILD_ROOT/var/log/mongodb/
 
 #%install router
-cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongor $RPM_BUILD_ROOT/etc/rc.d/init.d/mongor
-chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongor
-cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongor $RPM_BUILD_ROOT/etc/sysconfig/mongor
-cp /root/rpmbuild/SOURCES/mongodb/etc/mongor.conf $RPM_BUILD_ROOT/etc/mongor.conf
-touch $RPM_BUILD_ROOT/var/log/mongo/mongor.log
+cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongodb-router $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-router
+chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-router
+cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongodb-router $RPM_BUILD_ROOT/etc/sysconfig/mongodb-router
+cp /root/rpmbuild/SOURCES/mongodb/etc/mongodb-router.conf $RPM_BUILD_ROOT/etc/mongodb-router.conf
+touch $RPM_BUILD_ROOT/var/log/mongodb/mongodb-router.log
 
 
 #%install shard
-cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongos $RPM_BUILD_ROOT/etc/rc.d/init.d/mongos
-chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongos
-cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongos $RPM_BUILD_ROOT/etc/sysconfig/mongos
-cp /root/rpmbuild/SOURCES/mongodb/etc/mongos.conf $RPM_BUILD_ROOT/etc/mongos.conf
-touch $RPM_BUILD_ROOT/var/log/mongo/mongos.log
-mkdir -p $RPM_BUILD_ROOT/data/db/
+cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongodb-shard $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-shard
+chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-shard
+cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongodb-shard $RPM_BUILD_ROOT/etc/sysconfig/mongodb-shard
+cp /root/rpmbuild/SOURCES/mongodb/etc/mongodb-shard.conf $RPM_BUILD_ROOT/etc/mongodb-shard.conf
+touch $RPM_BUILD_ROOT/var/log/mongodb/mongodb-shard.log
+mkdir -p $RPM_BUILD_ROOT/var/lib/mongodb/
 
 
 #%install config
-cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongoc $RPM_BUILD_ROOT/etc/rc.d/init.d/mongoc
-chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongoc
-cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongoc $RPM_BUILD_ROOT/etc/sysconfig/mongoc
-cp /root/rpmbuild/SOURCES/mongodb/etc/mongoc.conf $RPM_BUILD_ROOT/etc/mongoc.conf
-touch $RPM_BUILD_ROOT/var/log/mongo/mongoc.log
-mkdir -p $RPM_BUILD_ROOT/data/configdb
+cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongodb-config $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-config
+chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-config
+cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongodb-config $RPM_BUILD_ROOT/etc/sysconfig/mongodb-config
+cp /root/rpmbuild/SOURCES/mongodb/etc/mongodb-config.conf $RPM_BUILD_ROOT/etc/mongodb-config.conf
+touch $RPM_BUILD_ROOT/var/log/mongodb/mongodb-config.log
+mkdir -p $RPM_BUILD_ROOT/var/lib/mongodb/configdb
 
 %clean
 scons -c
@@ -129,19 +124,19 @@ fi
 %post router
 if test $1 = 1
 then
-  /sbin/chkconfig --add mongor
+  /sbin/chkconfig --add mongodb-router
 fi
 
 %preun router
 if test $1 = 0
 then
-  /sbin/chkconfig --del mongor
+  /sbin/chkconfig --del mongodb-router
 fi
 
 %postun router
 if test $1 -ge 1
 then
-  /sbin/service mongor condrestart >/dev/null 2>&1 || :
+  /sbin/service mongodb-router condrestart >/dev/null 2>&1 || :
 fi
 
 #############################
@@ -150,19 +145,19 @@ fi
 %post shard
 if test $1 = 1
 then
-  /sbin/chkconfig --add mongos
+  /sbin/chkconfig --add mongodb-shard
 fi
 
 %preun shard
 if test $1 = 0
 then
-  /sbin/chkconfig --del mongos
+  /sbin/chkconfig --del mongodb-shard
 fi
 
 %postun shard
 if test $1 -ge 1
 then
-  /sbin/service mongos condrestart >/dev/null 2>&1 || :
+  /sbin/service mongodb-shard condrestart >/dev/null 2>&1 || :
 fi
 
 #############################
@@ -171,19 +166,19 @@ fi
 %post config
 if test $1 = 1
 then
-  /sbin/chkconfig --add mongoc
+  /sbin/chkconfig --add mongodb-config
 fi
 
 %preun config
 if test $1 = 0
 then
-  /sbin/chkconfig --del mongoc
+  /sbin/chkconfig --del mongodb-config
 fi
 
 %postun config
 if test $1 -ge 1
 then
-  /sbin/service mongoc condrestart >/dev/null 2>&1 || :
+  /sbin/service mongodb-config condrestart >/dev/null 2>&1 || :
 fi
 
 
@@ -220,35 +215,37 @@ fi
 %{_mandir}/man1/bsondump.1*
 %{_mandir}/man1/mongos.1*
 
-%attr(0755,mongod,mongod) %dir /var/log/mongo
+%attr(0755,mongod,mongod) %dir /var/log/mongodb/
 
 
 %files router
 %defattr(-,root,root,-)
-%config(noreplace) /etc/mongor.conf
-/etc/rc.d/init.d/mongor
-/etc/sysconfig/mongor
-%attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongo/mongor.log
+%config(noreplace) /etc/mongodb-router.conf
+/etc/rc.d/init.d/mongodb-router
+/etc/sysconfig/mongodb-router
+%attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongodb/mongodb-router.log
 
 
 %files shard
 %defattr(-,root,root,-)
-%config(noreplace) /etc/mongos.conf
-/etc/rc.d/init.d/mongos
-/etc/sysconfig/mongos
-%attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongo/mongos.log
+%config(noreplace) /etc/mongodb-shard.conf
+/etc/rc.d/init.d/mongodb-shard
+/etc/sysconfig/mongodb-shard
+%attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongodb/mongodb-shard.log
 
 
 %files config
 %defattr(-,root,root,-)
-%config(noreplace) /etc/mongoc.conf
-/etc/rc.d/init.d/mongoc
-/etc/sysconfig/mongoc
-%attr(0755,mongod,mongod) %dir /data/db
-%attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongo/mongoc.log
+%config(noreplace) /etc/mongodb-config.conf
+/etc/rc.d/init.d/mongodb-config
+/etc/sysconfig/mongodb-config
+%attr(0755,mongod,mongod) %dir /var/lib/mongodb/
+%attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongodb/mongodb-config.log
 
 
 %changelog
+* Tue Jul 10 2012 Martin Lazarov <martin@lazarov.bg>
+* Update mongodb version to 2.06
 * Mon Jan 16 2012 Martin Lazarov <martin@lazarov.bg>
 - removed devel & server packages and added router, shard and config packages
 
