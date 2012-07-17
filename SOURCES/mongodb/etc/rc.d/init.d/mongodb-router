@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# mongodb-router - Startup script for mongodb-router
+
+# chkconfig: 35 85 15
+# description: Mongo is a scalable, document-oriented database.
+# processname: mongos
+# config: /etc/mongodb-router.conf
+# pidfile: /var/run/mongo/mongos.pid
+# 
+# Author:       Martin Lazarov <martin@lazarov.bg>
+#
+#
+
+. /etc/rc.d/init.d/functions
+
+# things from mongodb-router.conf get there by mongodb-router reading it
+
+
+# NOTE: if you change any OPTIONS here, you get what you pay for:
+# this script assumes all options are in the config file.
+CONFIGFILE="/etc/mongodb-router.conf"
+OPTIONS=" -f $CONFIGFILE --pidfilepath=/var/lib/mongo/mongod.lock"
+SYSCONFIG="/etc/sysconfig/mongodb-router"
+
+# FIXME: 1.9.x has a --shutdown flag that parses the config file and
+# shuts down the correct running pid, but that's unavailable in 1.8
+# for now.  This can go away when this script stops supporting 1.8.
+#DBPATH=`awk -F= '/^dbpath=/{print $2}' "$CONFIGFILE"`
+mongos=${MONGOD-/usr/bin/mongos}
+DBPATH=/var/lib/mongo/
+
+MONGO_USER=mongod
+MONGO_GROUP=mongod
+
+. "$SYSCONFIG" || true
+
+start()
+{
+  echo -n $"Starting mongodb-router: "
+  daemon --user "$MONGO_USER" $mongos $OPTIONS
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongos
+}
+
+stop()
+{
+  echo -n $"Stopping mongodb-router: "
+  echo "$DBPATH"/mongos.lock
+  killproc -p "$DBPATH"/mongos.lock -t30 -TERM /usr/bin/mongos
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongos
+}
+
+restart () {
+	stop
+	start
+}
+
+ulimit -n 12000
+RETVAL=0
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload|force-reload)
+    restart
+    ;;
+  condrestart)
+    [ -f /var/lock/subsys/mongos ] && restart || :
+    ;;
+  status)
+    status $mongos
+    RETVAL=$?
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+    RETVAL=1
+esac
+
+exit $RETVAL
