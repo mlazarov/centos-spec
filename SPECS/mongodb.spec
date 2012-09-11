@@ -1,5 +1,5 @@
 Name: mongodb
-Version: 2.0.6
+Version: 2.2.0
 Release: 1%{?dist}
 Summary: mongo client shell and tools
 License: AGPL 3.0
@@ -48,7 +48,7 @@ software, default configuration files, and init.d scripts.
 
 #### Config ########
 %package config
-Summary: Headers and libraries for mongo development. 
+Summary: Mongo config server 
 Group: Applications/Databases
 Requires: mongodb
 
@@ -57,6 +57,16 @@ Mongo (from "huMONGOus") is a schema-free document-oriented database.
 
 This package provides the mongo static library and header files needed
 to develop mongo client software.
+
+##### Devel #######
+%package devel
+Summary: Headers and libraries for mongo development.
+Group: Applications/Databases
+Requires: mongodb
+
+%description devel
+MongoDB headers and libraries for mongo development
+
 
 
 %prep
@@ -104,8 +114,6 @@ mkdir -p $RPM_BUILD_ROOT/var/lib/mongodb/configdb
 %clean
 scons -c
 rm -rf $RPM_BUILD_ROOT
-
-
 
 
 #### All
@@ -182,11 +190,6 @@ then
 fi
 
 
-
-
-
-
-
 %files
 %defattr(-,root,root,-)
 %doc README GNU-AGPL-3.0.txt
@@ -202,6 +205,8 @@ fi
 %{_bindir}/mongotop
 %{_bindir}/mongod
 %{_bindir}/mongos
+%{_bindir}/mongooplog
+%{_bindir}/mongoperf
 
 %{_mandir}/man1/mongo.1*
 %{_mandir}/man1/mongod.1*
@@ -242,10 +247,21 @@ fi
 %attr(0755,mongod,mongod) %dir /var/lib/mongodb/
 %attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongodb/mongodb-config.log
 
+%files devel
+%defattr(-,root,root,-)
+%attr(0755,mongod,mongod) %dir /usr/include/mongo/
+/usr/include/mongo/*
+/usr/lib/libmongoclient.a
+
 
 %changelog
+* Tue Sep 11 2012 Martin Lazarov <martin@lazarov.bg>
+- Updated mongodb version 2.2.0
+- Added devel package
+
 * Tue Jul 10 2012 Martin Lazarov <martin@lazarov.bg>
-* Update mongodb version to 2.06
+- Update mongodb version to 2.06
+
 * Mon Jan 16 2012 Martin Lazarov <martin@lazarov.bg>
 - removed devel & server packages and added router, shard and config packages
 
