@@ -6,7 +6,7 @@
 # description: Mongo is a scalable, document-oriented database.
 # processname: mongod
 # config: /etc/mongodb-config.conf
-# pidfile: /var/run/mongo/mongo.pid
+# pidfile: /var/run/mongodb-config.pid
 
 . /etc/rc.d/init.d/functions
 
@@ -16,8 +16,7 @@
 # NOTE: if you change any OPTIONS here, you get what you pay for:
 # this script assumes all options are in the config file.
 CONFIGFILE="/etc/mongodb-config.conf"
-#OPTIONS=" -f $CONFIGFILE --shardsvr --replSet rs_a "
-OPTIONS=" -f $CONFIGFILE --shardsvr "
+OPTIONS=" -f $CONFIGFILE --configsvr --pidfilepath=/var/run/mongodb-config.pid "
 SYSCONFIG="/etc/sysconfig/mongodb-config"
 
 # FIXME: 1.9.x has a --shutdown flag that parses the config file and
@@ -37,16 +36,16 @@ start()
   daemon --user "$MONGO_USER" $mongod $OPTIONS
   RETVAL=$?
   echo
-  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongod
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongodb-config
 }
 
 stop()
 {
   echo -n $"Stopping mongodb-config: "
-  killproc -p "$DBPATH"/mongod.lock -t30 -TERM /usr/bin/mongod
+  killproc -p /var/run/mongodb-config.pid -t30 -TERM /usr/bin/mongod
   RETVAL=$?
   echo
-  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongod
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongodb-config
 }
 
 restart () {
@@ -68,7 +67,7 @@ case "$1" in
     restart
     ;;
   condrestart)
-    [ -f /var/lock/subsys/mongod ] && restart || :
+    [ -f /var/lock/subsys/mongodb-config ] && restart || :
     ;;
   status)
     status $mongod

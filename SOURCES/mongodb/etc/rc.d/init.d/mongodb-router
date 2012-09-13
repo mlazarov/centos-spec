@@ -6,7 +6,7 @@
 # description: Mongo is a scalable, document-oriented database.
 # processname: mongos
 # config: /etc/mongodb-router.conf
-# pidfile: /var/run/mongo/mongos.pid
+# pidfile: /var/run/mongodb-router.pid
 # 
 # Author:       Martin Lazarov <martin@lazarov.bg>
 #
@@ -20,7 +20,7 @@
 # NOTE: if you change any OPTIONS here, you get what you pay for:
 # this script assumes all options are in the config file.
 CONFIGFILE="/etc/mongodb-router.conf"
-OPTIONS=" -f $CONFIGFILE --pidfilepath=/var/lib/mongo/mongod.lock"
+OPTIONS=" -f $CONFIGFILE --pidfilepath=/var/run/mongodb-router.pid "
 SYSCONFIG="/etc/sysconfig/mongodb-router"
 
 # FIXME: 1.9.x has a --shutdown flag that parses the config file and
@@ -41,17 +41,16 @@ start()
   daemon --user "$MONGO_USER" $mongos $OPTIONS
   RETVAL=$?
   echo
-  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongos
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongodb-router
 }
 
 stop()
 {
   echo -n $"Stopping mongodb-router: "
-  echo "$DBPATH"/mongos.lock
-  killproc -p "$DBPATH"/mongos.lock -t30 -TERM /usr/bin/mongos
+  killproc -p /var/run/mongodb-router.pid -t30 -TERM /usr/bin/mongos
   RETVAL=$?
   echo
-  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongos
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongodb-router
 }
 
 restart () {
@@ -73,7 +72,7 @@ case "$1" in
     restart
     ;;
   condrestart)
-    [ -f /var/lock/subsys/mongos ] && restart || :
+    [ -f /var/lock/subsys/mongodb-router ] && restart || :
     ;;
   status)
     status $mongos
