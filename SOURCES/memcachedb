@@ -1,0 +1,17 @@
+#!/bin/sh
+# chkconfig: - 80 12
+# description:  The memcached daemon is a network memory cache service.
+# processname: memcached
+BIN=/usr/bin/memcachedb
+USER=nobody
+CON=2048
+
+case "$1" in
+	start)
+		$BIN -d -m 16 -p 11211 -c $CON -u $USER -f /var/lib/memcachedb/default1.db -H /var/lib/memcachedb/
+		#$BIN -d -m 16 -p 11212 -c $CON -u $USER -f /var/lib/memcachedb/default2.db -H /var/lib/memcachedb/
+	;;
+	stop)
+		killall $BIN
+	;;
+esac
