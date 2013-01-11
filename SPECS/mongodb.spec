@@ -1,6 +1,6 @@
 Name: mongodb
-Version: 2.2.0
-Release: 1%{?dist}
+Version: 2.2.2
+Release: 0%{?dist}
 Summary: mongo client shell and tools
 License: AGPL 3.0
 URL: http://www.mongodb.org
@@ -68,12 +68,23 @@ Requires: mongodb
 MongoDB headers and libraries for mongo development
 
 
+##### Arbiter #######
+%package arbiter
+Summary: Mongo arbiter server.
+Group: Applications/Databases
+Requires: mongodb
+
+%description arbiter
+Mongo (from "huMONGOus") is a schema-free document-oriented database.
+
+This package provides the mongo arbiter server software and default 
+configuration files required for mongo arbiter server, also and init.d scripts
 
 %prep
 %setup
 
 %build
-scons --prefix=$RPM_BUILD_ROOT/usr all
+scons --prefix=$RPM_BUILD_ROOT/usr -j 8 all
 # XXX really should have shared library here
 
 %install
@@ -85,6 +96,7 @@ mkdir -p $RPM_BUILD_ROOT/etc
 mkdir -p $RPM_BUILD_ROOT/etc/sysconfig
 mkdir -p $RPM_BUILD_ROOT/var/lib/mongodb/
 mkdir -p $RPM_BUILD_ROOT/var/log/mongodb/
+mkdir -p $RPM_BUILD_ROOT/var/run/mongodb/
 
 #%install router
 cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongodb-router $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-router
@@ -110,6 +122,14 @@ cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongodb-config $RPM_BUILD_ROOT/e
 cp /root/rpmbuild/SOURCES/mongodb/etc/mongodb-config.conf $RPM_BUILD_ROOT/etc/mongodb-config.conf
 touch $RPM_BUILD_ROOT/var/log/mongodb/mongodb-config.log
 mkdir -p $RPM_BUILD_ROOT/var/lib/mongodb/configdb
+
+#%install arbiter
+cp /root/rpmbuild/SOURCES/mongodb/etc/rc.d/init.d/mongodb-arbiter $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-arbiter
+chmod a+x $RPM_BUILD_ROOT/etc/rc.d/init.d/mongodb-arbiter
+cp /root/rpmbuild/SOURCES/mongodb/etc/sysconfig/mongodb-arbiter $RPM_BUILD_ROOT/etc/sysconfig/mongodb-arbiter
+cp /root/rpmbuild/SOURCES/mongodb/etc/mongodb-arbiter.conf $RPM_BUILD_ROOT/etc/mongodb-arbiter.conf
+touch $RPM_BUILD_ROOT/var/log/mongodb/mongodb-arbiter.log
+mkdir -p $RPM_BUILD_ROOT/var/lib/mongodb/arbiter
 
 %clean
 scons -c
@@ -190,6 +210,28 @@ then
 fi
 
 
+#############################
+#### Arbiter
+
+%post arbiter
+if test $1 = 1
+then
+  /sbin/chkconfig --add mongodb-arbiter
+fi
+
+%preun arbiter
+if test $1 = 0
+then
+  /sbin/chkconfig --del mongodb-arbiter
+fi
+
+%postun arbiter
+if test $1 -ge 1
+then
+  /sbin/service mongodb-arbiter condrestart >/dev/null 2>&1 || :
+fi
+
+
 %files
 %defattr(-,root,root,-)
 %doc README GNU-AGPL-3.0.txt
@@ -221,6 +263,8 @@ fi
 %{_mandir}/man1/mongos.1*
 
 %attr(0755,mongod,mongod) %dir /var/log/mongodb/
+%attr(0755,mongod,mongod) %dir /var/run/mongodb/
+%attr(0755,mongod,mongod) %dir /var/lib/mongodb/
 
 
 %files router
@@ -244,7 +288,6 @@ fi
 %config(noreplace) /etc/mongodb-config.conf
 /etc/rc.d/init.d/mongodb-config
 /etc/sysconfig/mongodb-config
-%attr(0755,mongod,mongod) %dir /var/lib/mongodb/
 %attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongodb/mongodb-config.log
 
 %files devel
@@ -253,8 +296,18 @@ fi
 /usr/include/mongo/*
 /usr/lib/libmongoclient.a
 
+%files arbiter
+%defattr(-,root,root,-)
+%config(noreplace) /etc/mongodb-arbiter.conf
+/etc/rc.d/init.d/mongodb-arbiter
+/etc/sysconfig/mongodb-arbiter
+%attr(0640,mongod,mongod) %config(noreplace) %verify(not md5 size mtime) /var/log/mongodb/mongodb-arbiter.log
+
 
 %changelog
+* Fri Jan 01 2013 Martin Lazarov <martin@lazarov.bg>
+- Adding arbiter package
+
 * Tue Sep 11 2012 Martin Lazarov <martin@lazarov.bg>
 - Updated mongodb version 2.2.0
 - Added devel package

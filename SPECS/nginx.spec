@@ -8,8 +8,8 @@
 %global  nginx_webroot       %{nginx_datadir}/html
 
 Name:              nginx
-Version:           1.0.15
-Release:           3%{?dist}
+Version:           1.2.5
+Release:           5%{?dist}
 
 Summary:           A high performance web server and reverse proxy server
 Group:             System Environment/Daemons
@@ -44,6 +44,7 @@ BuildRequires:     pcre-devel
 BuildRequires:     perl-devel
 BuildRequires:     perl(ExtUtils::Embed)
 BuildRequires:     zlib-devel
+BuildRequires:		make
 Requires:          GeoIP
 Requires:          gd
 Requires:          openssl
@@ -105,6 +106,7 @@ export DESTDIR=%{buildroot}
     --with-http_stub_status_module \
     --with-http_perl_module \
     --with-mail \
+    --with-debug \
     --with-mail_ssl_module \
     --add-module=/root/rpmbuild/SOURCES/nginx/nginx-gridfs/ \
     --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
