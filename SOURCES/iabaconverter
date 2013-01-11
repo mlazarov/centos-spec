@@ -1,0 +1,21 @@
+#!/bin/sh
+ready=0
+count=0
+
+while [ $ready -eq 0 ] && [ $count -lt 24 ]; do
+	stat=$(ps ax | grep jodconverter | grep -v "grep")
+	if [ -z "$stat" ]; then
+		ready=1
+	else
+		sleep 5
+		count=$((count+1))
+	fi
+done
+
+if [ $count -eq 24 ]; then
+	exit 1
+fi
+
+if [ $ready -eq 1 ]; then
+	java -jar /opt/jodconverter/lib/jodconverter-cli-2.2.2.jar -v $1 $2
+fi

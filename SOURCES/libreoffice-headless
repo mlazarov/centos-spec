@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# libreoffice-headless - this script starts and stops the soffice daemon
+#
+# chkconfig:	345 20 80
+# description:	init.d scruot for headless libreoffice
+# processname: libreoffice-headless
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+
+libreoffice="/usr/lib64/libreoffice/program/soffice.bin"
+libreoffice_args='--accept="socket,host=127.0.0.1,port=8100;urp" --headless --nologo --norestore --nodefault --invisible'
+prog=$(basename $libreoffice)
+
+sysconfig="/etc/sysconfig/$prog"
+lockfile="/var/lock/subsys/libreoffice-headless"
+pidfile="/var/run/${prog}.pid"
+
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon "$libreoffice $libreoffice_args &"
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    pidof soffice.bin > $pidfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc -p $pidfile $prog
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+rh_status() {
+    status $prog
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart)
+	rh_status_q || exit 0
+        $1
+        ;;
+    status)
+        rh_status || exit 0
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart}"
+        exit 2
+esac
