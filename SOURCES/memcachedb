@@ -6,12 +6,23 @@ BIN=/usr/bin/memcachedb
 USER=nobody
 CON=2048
 
+. /etc/init.d/functions
+
 case "$1" in
 	start)
-		$BIN -d -m 16 -p 11211 -c $CON -u $USER -f /var/lib/memcachedb/default1.db -H /var/lib/memcachedb/
-		#$BIN -d -m 16 -p 11212 -c $CON -u $USER -f /var/lib/memcachedb/default2.db -H /var/lib/memcachedb/
+		echo "Starting memcachedb"
+		$BIN -d -m 16 -p 11211 -c $CON -u $USER -f /var/lib/memcachedb/default1.db -H /var/lib/memcachedb/ -P /var/run/memcachedb/pid
+		echo 
 	;;
-	stop)
-		killall $BIN
+	stop)	
+		echo "Stoping memcachedb"
+		kill -9 `cat /var/run/memcachedb/pid`
 	;;
+	restart)
+                $0 stop
+                $0 start
+        ;;
+	status)
+                status -p /var/run/memcachedb/pid memcachedb
+        ;;
 esac
