@@ -18,6 +18,7 @@ Centos Spec Files
 * php-pear-Text_LanguageDetect v0.3.0
 * php-pecl-amqp v0.3.1
 * php-pecl-gearman v0.8.0
+* php-pecl-memcached v2.1.0
 
 
 Dependencies
