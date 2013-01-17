@@ -14,6 +14,7 @@ Centos Spec Files
 * Tar v1.26
 
 * librabbitmq v0.9.1
+* libmemcached v1.0.15
 * php-pear-Text_LanguageDetect v0.3.0
 * php-pecl-amqp v0.3.1
 * php-pecl-gearman v0.8.0
