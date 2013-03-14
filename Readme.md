@@ -11,6 +11,7 @@ Centos Spec Files
 * Nginx v1.2.5 + nginx-gridfs support
 * Redis v2.4.2
 * Rubby v1.9.3
+* Supervisor v3.0b1
 * Tar v1.26
 
 * librabbitmq v0.9.1
