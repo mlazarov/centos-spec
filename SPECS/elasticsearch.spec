@@ -2,7 +2,6 @@ Name:		elasticsearch
 Version:	1.0
 Release:	1%{?dist}
 Summary:	Elasticsearch is a distributed, highly available, RESTful search engine
-Group:		Duvamis
 License:	GPL
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 

@@ -2,7 +2,6 @@ Name:		iabaconverter
 Version:	1.0
 Release:	8%{?dist}
 Summary:	Iabaconverter uses JODConverter to automates conversions between office document formats using OpenOffice.org
-Group:		Duvamis/Media
 License:	GPL
 URL:		http://sourceforge.net/projects/jodconverter/
 Source0:	jodconverter-2.2.2.zip

@@ -9,6 +9,9 @@ Centos Spec Files
 * MemcacheDB v1.2.0
 * MongoDB v2.2.2
 * Nginx v1.2.5 + nginx-gridfs support
+* node_modules
+* nodejs
+* npm
 * Redis v2.4.2
 * Rubby v1.9.3
 * Supervisor v3.0b1
