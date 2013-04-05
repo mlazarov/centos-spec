@@ -1,13 +1,13 @@
 %define rubyver         1.9.3
-%define rubyminorver    p0
+%define rubyminorver    p392
 
 Name:           ruby
 Version:        %{rubyver}%{rubyminorver}
-Release:        0%{?dist}
+Release:        5%{?dist}
 License:        Ruby License/GPL - see COPYING
 URL:            http://www.ruby-lang.org/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:  readline readline-devel ncurses ncurses-devel gdbm gdbm-devel glibc-devel tcl-devel gcc unzip openssl-devel db4-devel byacc make
+BuildRequires:  readline readline-devel ncurses ncurses-devel gdbm gdbm-devel glibc-devel tcl-devel gcc unzip openssl-devel db4-devel byacc make libyaml-devel
 Source0:        ftp://ftp.ruby-lang.org/pub/ruby/ruby-%{rubyver}-%{rubyminorver}.tar.gz
 Summary:        An interpreter of object-oriented scripting language
 Group:          Development/Languages
@@ -16,11 +16,13 @@ Provides: ruby-irb
 Provides: ruby-rdoc
 Provides: ruby-libs
 Provides: ruby-devel
+Provides: rubygems
 Obsoletes: ruby
 Obsoletes: ruby-libs
 Obsoletes: ruby-irb
 Obsoletes: ruby-rdoc
 Obsoletes: ruby-devel
+Obsoletes: rubygems
 
 %description
 Ruby is the interpreted scripting language for quick and easy
@@ -33,6 +35,9 @@ straight-forward, and extensible.
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS -Wall -fno-strict-aliasing"
+
+echo %{_libdir}
+
 
 %configure \
   --enable-shared \
@@ -62,6 +67,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}
 
 %changelog
+* Fri Jan 27 2012 Martin Lazarov <martin@lazarov.bg> - 1.9.3-rc1
+- Update ruby version to 1.9.3-rc1
 * Mon Aug 29 2011 Gregory Graf <graf.gregory@gmail.com> - 1.9.2-p290
 - Update ruby version to 1.9.2-p290
 * Sat Jun 25 2011 Ian Meyer <ianmmeyer@gmail.com> - 1.9.2-p180-2
