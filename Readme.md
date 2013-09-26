@@ -7,7 +7,7 @@ Centos Spec Files
 * HaProxy v1.4.19
 * HaProxy v1.5_dev17
 * Memcached v1.4.5
-* MemcacheDB v1.2.0
+* MemcacheDB v1.2.1
 * MongoDB v2.2.2
 * Nginx v1.2.5 + nginx-gridfs support
 * node_modules

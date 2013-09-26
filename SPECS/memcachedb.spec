@@ -1,12 +1,12 @@
 Name:		memcachedb
-Version:	1.2.0
+Version:	1.2.1
 Release:	1%{?dist}
 Summary:	A distributed key-value storage system designed for persistent.
 
 Group:		Applications/Databases
 License:	New BSD License
 URL:		http://memcachedb.org
-Source0:	memcachedb-1.2.0.tar.gz
+Source0:	memcachedb-1.2.1.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 BuildRequires:	libevent-devel, db4-devel
@@ -25,7 +25,7 @@ so lots of features including transaction and replication are supported.
 
 
 %build
-%configure
+%configure --enable-threads
 make %{?_smp_mflags}
 
 
@@ -40,6 +40,7 @@ cp tools/mcben.py $RPM_BUILD_ROOT/usr/bin/
 cp tools/mdbtest.py $RPM_BUILD_ROOT/usr/bin/
 cp tools/mdbtop.py $RPM_BUILD_ROOT/usr/bin/
 %{__mkdir} -p "${RPM_BUILD_ROOT}/var/lib/memcachedb/"
+%{__mkdir} -p "${RPM_BUILD_ROOT}/var/run/memcachedb/"
 
 
 
@@ -73,7 +74,7 @@ fi
 /usr/bin/mdbtop.py
 /etc/init.d/memcachedb
 %attr(700,nobody,nobody)/var/lib/memcachedb/
-
+%attr(700,nobody,nobody)/var/run/memcachedb/
 
 %changelog
 * Thu May 29 2012 Martin Lazarov <martin@lazarov.bg>
