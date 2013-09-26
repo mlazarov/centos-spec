@@ -5,6 +5,7 @@ Centos Spec Files
 
 * Gearman v1.1.2 + mysql and memcache support
 * HaProxy v1.4.19
+* HaProxy v1.5_dev17
 * Memcached v1.4.5
 * MemcacheDB v1.2.0
 * MongoDB v2.2.2
