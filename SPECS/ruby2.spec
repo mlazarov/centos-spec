@@ -1,9 +1,9 @@
-%define rubyver         1.9.3
-%define rubyminorver    p448
+%define rubyver         2.0.0
+%define rubyminorver    p247
 
 Name:           ruby
 Version:        %{rubyver}%{rubyminorver}
-Release:        5%{?dist}
+Release:        1%{?dist}
 License:        Ruby License/GPL - see COPYING
 URL:            http://www.ruby-lang.org/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -17,7 +17,7 @@ Provides: ruby-rdoc
 Provides: ruby-libs
 Provides: ruby-devel
 Provides: rubygems
-Obsoletes: ruby
+Obsoletes: ruby < 2.0
 Obsoletes: ruby-libs
 Obsoletes: ruby-irb
 Obsoletes: ruby-rdoc

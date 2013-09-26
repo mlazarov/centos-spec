@@ -14,7 +14,8 @@ Centos Spec Files
 * nodejs
 * npm
 * Redis v2.4.2
-* Rubby v1.9.3
+* Rubby v1.9.3-p448
+* Rubby v2.0.0-p247
 * Supervisor v3.0b1
 * Tar v1.26
 
