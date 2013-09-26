@@ -3,6 +3,7 @@ Centos Spec Files
 
 **All tested and all working!!!**
 
+* Git v1.8.4
 * Gearman v1.1.2 + mysql and memcache support
 * HaProxy v1.4.19
 * HaProxy v1.5_dev17
