@@ -15,6 +15,7 @@ Centos Spec Files
 * nodejs
 * npm
 * Redis v2.4.2
+* Ssdeep v2.10
 * Rubby v1.9.3-p448
 * Rubby v2.0.0-p247
 * Supervisor v3.0b1
@@ -26,6 +27,7 @@ Centos Spec Files
 * php-pecl-amqp v0.3.1
 * php-pecl-gearman v0.8.0
 * php-pecl-memcached v2.1.0
+* php-pecl-ssdeep v1.0.2
 
 
 Dependencies
