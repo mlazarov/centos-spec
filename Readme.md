@@ -20,6 +20,7 @@ Centos Spec Files
 * Rubby v2.0.0-p247
 * Supervisor v3.0b1
 * Tar v1.26
+* dos2unix v7.3.4
 
 * librabbitmq v0.9.1
 * libmemcached v1.0.15
