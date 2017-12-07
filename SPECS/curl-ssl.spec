@@ -1,7 +1,7 @@
-%define name curl-ssl
+%define name curl
 %define tarball curl
 %define version 7.57.0
-%define release 1
+%define release 2
 
 %define curlroot %{_builddir}/%{tarball}-%{version}
 
@@ -16,9 +16,9 @@ Group: Utilities/Console
 Source: %{tarball}-%{version}.tar.gz
 URL: https://curl.haxx.se/
 Provides: curl
-Obsoletes: curl
 BuildRoot: %{_tmppath}/%{tarball}-%{version}-root
 Requires: openssl >= 0.9.5
+AutoReqProv: no
 
 %description
 curl is a client to get documents/files from servers, using any of the
@@ -37,6 +37,22 @@ Provides:	curl-devel
 %description devel
 libcurl is the core engine of curl; this packages contains all the libs,
 headers, and manual pages to develop applications using libcurl.
+
+
+%package -n libcurl
+Summary: A library for getting files from web servers
+Group: Development/Libraries
+Requires: libssh2%{?_isa} >= %{libssh2_version}
+
+%description -n libcurl
+libcurl is a free and easy-to-use client-side URL transfer library, supporting
+FTP, FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE, IMAP,
+SMTP, POP3 and RTSP. libcurl supports SSL certificates, HTTP POST, HTTP PUT,
+FTP uploading, HTTP form based upload, proxies, cookies, user+password
+authentication (Basic, Digest, NTLM, Negotiate, Kerberos4), file transfer
+resume, http proxy tunneling and more.
+
+
 
 %prep
 
@@ -67,7 +83,7 @@ make DESTDIR=%{buildroot} install-strip
 %attr(0755,root,root) %{_bindir}/curl
 %attr(0644,root,root) %{_mandir}/man1/curl.1*
 #%attr(0644,root,root) %{_mandir}/man1/mk-ca-bundle.1
-%{_libdir}/libcurl.so*
+#%{_libdir}/libcurl.so*
 #%{_datadir}/curl/curl-ca-bundle.crt
 %doc CHANGES COPYING README docs/BUGS
 %doc docs/FAQ docs/FEATURES docs/INSTALL
@@ -84,3 +100,8 @@ make DESTDIR=%{buildroot} install-strip
 %{_libdir}/libcurl.la
 %{_libdir}/pkgconfig/libcurl.pc
 /usr/share/aclocal/libcurl.m4
+
+%files -n libcurl
+%{!?_licensedir:%global license %%doc}
+%license COPYING
+%{_libdir}/libcurl.so*
